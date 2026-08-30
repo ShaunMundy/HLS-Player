@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "HLS Player",
+  "version": "0.1.0",
+  "description": "Play HLS (.m3u8) streams directly in a clean local video player.",
+  "permissions": [
+    "webRequest",
+    "webRequestBlocking"
+  ],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+  "background": {
+    "scripts": [
+      "url.js",
+      "background.js"
+    ]
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["player/player.html"],
+      "matches": ["http://*/*", "https://*/*"]
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "hls-player@coco-mundy.fr",
+      "strict_min_version": "142.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  }
+}

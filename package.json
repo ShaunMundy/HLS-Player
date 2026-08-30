@@ -1,0 +1,19 @@
+{
+  "name": "hls-player",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A small browser extension that plays HLS (.m3u8) streams directly in a clean video player.",
+  "license": "MIT",
+  "scripts": {
+    "vendor": "node scripts/vendor.mjs",
+    "lint": "npm run vendor && web-ext lint --source-dir extension",
+    "build": "npm run vendor && web-ext build --source-dir extension --artifacts-dir dist --overwrite-dest",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "hls.js": "1.7.1"
+  },
+  "devDependencies": {
+    "web-ext": "10.6.0"
+  }
+}
