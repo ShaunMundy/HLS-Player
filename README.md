@@ -16,17 +16,21 @@ HLS Player requests access to HTTP and HTTPS URLs because it must see top-level 
 
 The extension declares that it collects no data.
 
+## Compatibility
+
+The extension targets Firefox 140 and later, including Firefox 140 ESR. Firefox continues to support blocking `webRequest` handlers in Manifest V3.
+
 ## Development
 
 Requirements:
 
-- Node.js 24 or compatible current LTS
+- Node.js 22 or later
 - npm
 
-Install dependencies:
+Install the exact locked dependency set:
 
 ```text
-npm install
+npm ci
 ```
 
 Run tests:
@@ -35,7 +39,7 @@ Run tests:
 npm test
 ```
 
-Run Mozilla's extension linter:
+Run Mozilla's extension linter with warnings treated as errors:
 
 ```text
 npm run lint
@@ -48,6 +52,20 @@ npm run build
 ```
 
 The build copies the exact pinned `hls.js` distribution from `node_modules` into the extension package before running `web-ext build`.
+
+## Publishing to AMO
+
+The repository contains `amo-metadata.json` with the metadata required for the first listed submission to addons.mozilla.org.
+
+Create AMO API credentials in the Mozilla Developer Hub and expose them to `web-ext` as `WEB_EXT_API_KEY` and `WEB_EXT_API_SECRET`. Do not store those credentials in this repository.
+
+After tests and linting pass, submit the listed build with:
+
+```text
+npm run sign:listed
+```
+
+This command vendors the pinned `hls.js` build and submits the extension with the repository's AMO metadata. Public availability is subject to Mozilla's review process.
 
 ## Test streams
 
