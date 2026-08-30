@@ -17,5 +17,6 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Restricted HLS interception explicitly to HTTP and HTTPS URLs.
 - Expanded URL-classification tests for protocol and lookalike edge cases.
+- Added direct tests for player redirects, including preservation of signed/query-bearing stream URLs.
 - Mozilla lint warnings now fail CI.
 - Minimum supported Firefox version remains 142 to satisfy current Mozilla cross-platform linting for the data-collection declaration.
