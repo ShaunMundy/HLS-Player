@@ -18,7 +18,7 @@ The extension declares that it collects no data.
 
 ## Compatibility
 
-The extension targets Firefox 140 and later, including Firefox 140 ESR. Firefox continues to support blocking `webRequest` handlers in Manifest V3.
+The extension targets Firefox 142 and later. Firefox continues to support blocking `webRequest` handlers in Manifest V3.
 
 ## Development
 
