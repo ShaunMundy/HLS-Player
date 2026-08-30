@@ -1,0 +1,21 @@
+{
+  "summary": {
+    "en-US": "Play HLS (.m3u8) streams directly in Firefox instead of downloading them."
+  },
+  "description": {
+    "en-US": "HLS Player intercepts top-level HTTP Live Streaming (.m3u8) navigations and opens them in a clean local video player. Playback uses Firefox's native HLS support when available and otherwise the bundled hls.js library. The extension has no accounts, analytics, telemetry, remote code, or developer-operated service."
+  },
+  "categories": [
+    "photos-music-videos"
+  ],
+  "privacy_policy": {
+    "en-US": "HLS Player does not collect, store, transmit, sell, or share personal data, browsing history, stream URLs, playback information, telemetry, or analytics. The extension accesses HTTP and HTTPS requests only to identify top-level HLS (.m3u8) navigations and to load the stream selected by the user for local playback. No data is sent to the developer or to any service operated by the developer."
+  },
+  "version": {
+    "license": "MIT",
+    "approval_notes": "The extension requests HTTP/HTTPS host access plus webRequest and webRequestBlocking because it must redirect a top-level .m3u8 navigation before Firefox treats the playlist as a download. The listener is restricted to main_frame requests and only redirects URLs whose parsed pathname ends in .m3u8. The player fetches only the user-selected stream. hls.js is pinned and bundled locally; no remote code is executed.",
+    "release_notes": {
+      "en-US": "Initial release with automatic .m3u8 interception, local HLS playback, native video controls, and basic playback error recovery."
+    }
+  }
+}
