@@ -8,6 +8,7 @@
     "vendor": "node scripts/vendor.mjs",
     "lint": "npm run vendor && web-ext lint --warnings-as-errors --source-dir extension",
     "build": "npm run vendor && web-ext build --source-dir extension --artifacts-dir dist --overwrite-dest",
+    "sign:unlisted": "npm run vendor && web-ext sign --source-dir extension --artifacts-dir dist --channel unlisted",
     "sign:listed": "npm run vendor && web-ext sign --source-dir extension --artifacts-dir dist --channel listed --amo-metadata amo-metadata.json",
     "test": "node --test"
   },
