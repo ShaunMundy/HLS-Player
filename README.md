@@ -51,7 +51,13 @@ Build the XPI-compatible ZIP artifact:
 npm run build
 ```
 
-The build copies the exact pinned `hls.js` distribution from `node_modules` into the extension package before running `web-ext build`.
+Build the human-readable reviewer source archive:
+
+```text
+npm run source
+```
+
+The extension build copies the exact pinned `hls.js` distribution from `node_modules` into the package. The source archive is created directly from the current Git commit and contains the lockfile and build scripts needed to reproduce that vendored dependency.
 
 ## Signing and publishing
 
@@ -71,7 +77,7 @@ Only after that end-to-end test succeeds should version 0.1.0 be submitted for p
 npm run sign:listed
 ```
 
-The listed command vendors the pinned `hls.js` build and submits the extension with the repository's AMO metadata. Public availability is subject to Mozilla's review process.
+The listed command generates the reviewer source archive, vendors the pinned `hls.js` build, and submits both the extension and its AMO metadata. Public availability is subject to Mozilla's review process.
 
 ## Test streams
 

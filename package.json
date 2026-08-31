@@ -6,10 +6,11 @@
   "license": "MIT",
   "scripts": {
     "vendor": "node scripts/vendor.mjs",
+    "source": "node scripts/source.mjs",
     "lint": "npm run vendor && web-ext lint --warnings-as-errors --source-dir extension",
     "build": "npm run vendor && web-ext build --source-dir extension --artifacts-dir dist --overwrite-dest",
     "sign:unlisted": "npm run vendor && web-ext sign --source-dir extension --artifacts-dir dist --channel unlisted",
-    "sign:listed": "npm run vendor && web-ext sign --source-dir extension --artifacts-dir dist --channel listed --amo-metadata amo-metadata.json",
+    "sign:listed": "npm run source && npm run vendor && web-ext sign --source-dir extension --artifacts-dir dist --channel listed --amo-metadata amo-metadata.json --upload-source-code dist/source.zip",
     "test": "node --test"
   },
   "dependencies": {

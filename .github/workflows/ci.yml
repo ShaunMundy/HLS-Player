@@ -37,7 +37,10 @@ jobs:
       - name: Build extension
         run: npm run build
 
-      - name: Upload extension artifact
+      - name: Build reviewer source archive
+        run: npm run source
+
+      - name: Upload extension artifacts
         uses: actions/upload-artifact@v7
         with:
           name: hls-player-${{ github.sha }}
