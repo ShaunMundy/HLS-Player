@@ -2,12 +2,14 @@ import { spawnSync } from "node:child_process";
 import { mkdir } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { ensureClean } from "./ensure-clean.mjs";
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const root = resolve(scriptDir, "..");
 const distDir = resolve(root, "dist");
 const output = resolve(distDir, "source.zip");
 
+ensureClean(root);
 await mkdir(distDir, { recursive: true });
 
 const result = spawnSync(
