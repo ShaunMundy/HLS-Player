@@ -13,7 +13,7 @@
   },
   "version": {
     "license": "MIT",
-    "approval_notes": "The extension requests HTTP/HTTPS host access plus webRequest and webRequestBlocking because it must redirect a top-level .m3u8 navigation before Firefox treats the playlist as a download. The listener is restricted to main_frame requests and only redirects URLs whose parsed pathname ends in .m3u8. The player fetches only the user-selected stream. hls.js is pinned in package-lock.json and bundled locally; no remote code is executed. The uploaded source archive is generated from the exact Git commit. To reproduce the extension package, install Node.js 22 or later, run `npm ci`, then `npm run build`. The vendor step copies the pinned hls.js distribution and its license from node_modules into the extension before web-ext packages it.",
+    "approval_notes": "The extension requests HTTP/HTTPS host access plus webRequest and webRequestBlocking because it must redirect a top-level .m3u8 navigation before Firefox treats the playlist as a download. The listener is restricted to main_frame requests and only redirects URLs whose parsed pathname ends in .m3u8. The player fetches only the user-selected stream. hls.js is pinned in package-lock.json and bundled locally; no remote code is executed. The uploaded source archive is generated from the exact Git commit. To reproduce the extension package, install Node.js 24, run `npm ci`, then `npm run build`. The vendor step copies the pinned hls.js distribution and its license from node_modules into the extension before web-ext packages it.",
     "release_notes": {
       "en-US": "Initial release with automatic .m3u8 interception, local HLS playback, native video controls, and basic playback error recovery."
     }

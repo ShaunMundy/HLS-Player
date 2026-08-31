@@ -15,3 +15,11 @@ test("release metadata keeps the stable extension identity", () => {
   assert.equal(manifest.name, "HLS Player");
   assert.equal(manifest.browser_specific_settings.gecko.id, "hls-player@coco-mundy.fr");
 });
+
+test("Firefox compatibility and privacy declarations stay explicit", () => {
+  assert.equal(manifest.browser_specific_settings.gecko.strict_min_version, "140.0");
+  assert.deepEqual(
+    manifest.browser_specific_settings.gecko.data_collection_permissions.required,
+    ["none"]
+  );
+});
