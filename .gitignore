@@ -4,3 +4,4 @@ extension/vendor/hls.min.js
 extension/vendor/hls.worker.js
 extension/vendor/LICENSE-hls.txt
 *.log
+extension/.amo-upload-uuid
