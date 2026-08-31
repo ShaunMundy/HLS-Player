@@ -1,6 +1,6 @@
 node_modules/
 dist/
 extension/vendor/hls.min.js
-*.log
-
+extension/vendor/hls.worker.js
 extension/vendor/LICENSE-hls.txt
+*.log
