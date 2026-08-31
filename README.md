@@ -53,19 +53,25 @@ npm run build
 
 The build copies the exact pinned `hls.js` distribution from `node_modules` into the extension package before running `web-ext build`.
 
-## Publishing to AMO
-
-The repository contains `amo-metadata.json` with the metadata required for the first listed submission to addons.mozilla.org.
+## Signing and publishing
 
 Create AMO API credentials in the Mozilla Developer Hub and expose them to `web-ext` as `WEB_EXT_API_KEY` and `WEB_EXT_API_SECRET`. Do not store those credentials in this repository.
 
-After tests and linting pass, submit the listed build with:
+Before the first public listing, create a signed self-distribution build for the real Firefox installation test:
+
+```text
+npm run sign:unlisted
+```
+
+Install the resulting signed XPI in Firefox and verify the full user path: open the camera list, click a `.m3u8` stream, confirm that no download dialog appears, and confirm that the bundled HLS player opens and plays the stream.
+
+Only after that end-to-end test succeeds should version 0.1.0 be submitted for public listing. The repository contains `amo-metadata.json` with the metadata required for that first listed submission:
 
 ```text
 npm run sign:listed
 ```
 
-This command vendors the pinned `hls.js` build and submits the extension with the repository's AMO metadata. Public availability is subject to Mozilla's review process.
+The listed command vendors the pinned `hls.js` build and submits the extension with the repository's AMO metadata. Public availability is subject to Mozilla's review process.
 
 ## Test streams
 
