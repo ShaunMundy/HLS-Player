@@ -1,6 +1,6 @@
 {
   "name": "hls-player",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "A small browser extension that plays HLS (.m3u8) streams directly in a clean video player.",
   "license": "MIT",
@@ -8,11 +8,11 @@
     "vendor": "node scripts/vendor.mjs",
     "clean:check": "node scripts/ensure-clean.mjs",
     "source": "node scripts/source.mjs",
-    "lint": "npm run vendor && web-ext lint --warnings-as-errors --source-dir extension",
-    "build": "npm run vendor && web-ext build --source-dir extension --artifacts-dir dist --overwrite-dest",
+    "lint": "npm run vendor && web-ext lint --warnings-as-errors --source-dir extension --ignore-files \"**/*.mcp-ng-*\"",
+    "build": "npm run vendor && web-ext build --source-dir extension --artifacts-dir dist --overwrite-dest --ignore-files \"**/*.mcp-ng-*\"",
     "release:check": "npm run clean:check && npm audit --omit=dev --audit-level=high && npm test && npm run lint && npm run build",
-    "sign:unlisted": "npm run release:check && web-ext sign --source-dir extension --artifacts-dir dist --channel unlisted",
-    "sign:listed": "npm run release:check && npm run source && web-ext sign --source-dir extension --artifacts-dir dist --channel listed --amo-metadata amo-metadata.json --upload-source-code dist/source.zip",
+    "sign:unlisted": "npm run release:check && web-ext sign --source-dir extension --artifacts-dir dist --channel unlisted --ignore-files \"**/*.mcp-ng-*\"",
+    "sign:listed": "npm run release:check && npm run source && web-ext sign --source-dir extension --artifacts-dir dist --channel listed --amo-metadata amo-metadata.json --upload-source-code dist/source.zip --ignore-files \"**/*.mcp-ng-*\"",
     "test": "node --test"
   },
   "dependencies": {

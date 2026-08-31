@@ -24,3 +24,9 @@ test("Firefox compatibility and privacy declarations stay explicit", () => {
     ["none"]
   );
 });
+
+test("player preferences use local extension storage", () => {
+  assert.ok(manifest.permissions.includes("storage"));
+  assert.equal(manifest.action.default_popup, "settings/popup.html");
+  assert.equal(manifest.options_ui.page, "settings/popup.html");
+});

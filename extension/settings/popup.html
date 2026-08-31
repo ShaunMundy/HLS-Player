@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HLS Player settings</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main class="settings-shell">
+    <header class="settings-header">
+      <img src="../icons/icon-32.png" width="32" height="32" alt="">
+      <div>
+        <h1>HLS Player</h1>
+        <p>Player settings</p>
+      </div>
+    </header>
+
+    <label class="setting-row">
+      <span>
+        <strong>Seamless mode</strong>
+        <small>Show only the video content.</small>
+      </span>
+      <input id="seamless" type="checkbox">
+    </label>
+
+    <label class="setting-row">
+      <span>
+        <strong>Show video controls</strong>
+        <small>Use Firefox's native playback controls.</small>
+      </span>
+      <input id="show-controls" type="checkbox">
+    </label>
+
+    <p id="save-status" class="save-status" role="status" aria-live="polite">Saved locally in Firefox.</p>
+  </main>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

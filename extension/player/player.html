@@ -12,10 +12,12 @@
       <h1>HLS Player</h1>
       <p id="source" class="source"></p>
     </header>
-    <video id="video" controls autoplay playsinline></video>
+    <div class="player-stage">
+      <video id="video" autoplay playsinline></video>
+    </div>
     <p id="status" class="status" role="status" aria-live="polite">Preparing stream…</p>
   </main>
   <script src="../vendor/hls.min.js"></script>
-  <script src="player.js"></script>
+  <script type="module" src="player.js"></script>
 </body>
 </html>

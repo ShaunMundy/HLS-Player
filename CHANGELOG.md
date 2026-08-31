@@ -2,22 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.2.0] - 2026-08-31
 
 ### Added
-- Initial public-project scaffold.
+- Persistent Seamless mode for borderless in-page video playback.
+- A persistent setting to show or hide Firefox's native video controls.
+- A toolbar settings popup backed only by `browser.storage.local`.
+- The dedicated HLS Player icon in standard extension sizes.
+
+### Changed
+- Successful playback status messages now disappear automatically.
+- In Seamless mode, loading and error status is shown as a small video overlay.
+- Clicking the video toggles playback when native controls are hidden.
+
+## [0.1.0] - 2026-08-31
+
+### Added
 - Automatic interception of top-level `.m3u8` navigations.
 - Local HLS playback using bundled hls.js.
 - Native video controls and basic fatal-error recovery.
 - Explicit declaration that the extension collects no data.
-- AMO listing metadata and a reproducible listed-signing command.
-- A dedicated extension icon.
-- Production dependency auditing in CI.
-
-### Changed
-- Restricted HLS interception explicitly to HTTP and HTTPS URLs.
-- Expanded URL-classification tests for protocol and lookalike edge cases.
-- Added direct tests for player redirects, including preservation of signed/query-bearing stream URLs.
-- Added release-integrity tests that keep package and manifest versions plus the extension identity in sync.
-- Mozilla lint warnings now fail CI.
-- Minimum supported Firefox version remains 142 to satisfy current Mozilla cross-platform linting for the data-collection declaration.
+- Reproducible AMO signing and release checks.

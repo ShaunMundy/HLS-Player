@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "HLS Player",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Play HLS (.m3u8) streams directly in a clean local video player.",
   "icons": {
     "16": "icons/icon-16.png",
@@ -11,9 +11,24 @@
     "96": "icons/icon-96.png",
     "128": "icons/icon-128.png"
   },
+  "action": {
+    "default_title": "HLS Player settings",
+    "default_popup": "settings/popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png",
+      "64": "icons/icon-64.png"
+    }
+  },
+  "options_ui": {
+    "page": "settings/popup.html",
+    "open_in_tab": false
+  },
   "permissions": [
     "webRequest",
-    "webRequestBlocking"
+    "webRequestBlocking",
+    "storage"
   ],
   "host_permissions": [
     "http://*/*",

@@ -8,17 +8,19 @@ The project is intentionally narrow: no analytics, no accounts, no native host, 
 
 When a top-level HTTP or HTTPS navigation points to a URL whose path ends in `.m3u8`, the extension redirects that navigation to its bundled player page. Playback uses the browser's native HLS implementation when available and otherwise uses the bundled `hls.js` library.
 
+The toolbar popup provides two persistent local preferences: **Seamless mode** removes the player page chrome so only the video remains, and **Show video controls** toggles Firefox's native playback controls. Changes apply immediately to open player tabs.
+
 ## Permissions
 
 HLS Player requests access to HTTP and HTTPS URLs because it must see top-level navigation requests before the browser turns an HLS playlist into a download. The extension only reacts to top-level URLs whose path ends in `.m3u8`.
 
 `webRequest` and `webRequestBlocking` are used only to redirect those HLS navigations to the local player page.
 
-The extension declares that it collects no data.
+The extension declares that it collects no data. Seamless mode and the native-controls preference are stored only in `browser.storage.local` and are not synchronized.
 
 ## Compatibility
 
-The extension targets Firefox 142 and later. Firefox continues to support blocking `webRequest` handlers in Manifest V3.
+Desktop Firefox 140 and later is supported. Firefox for Android requires 142 or later. Firefox continues to support blocking `webRequest` handlers in Manifest V3.
 
 ## Development
 
@@ -63,15 +65,9 @@ The extension build copies the exact pinned `hls.js` distribution from `node_mod
 
 Create AMO API credentials in the Mozilla Developer Hub and expose them to `web-ext` as `WEB_EXT_API_KEY` and `WEB_EXT_API_SECRET`. Do not store those credentials in this repository.
 
-Before the first public listing, create a signed self-distribution build for the real Firefox installation test:
+The signed 0.1.0 build completed the first real Firefox end-to-end installation test.
 
-```text
-npm run sign:unlisted
-```
-
-Install the resulting signed XPI in Firefox and verify the full user path: open the camera list, click a `.m3u8` stream, confirm that no download dialog appears, and confirm that the bundled HLS player opens and plays the stream.
-
-Only after that end-to-end test succeeds should version 0.1.0 be submitted for public listing. The repository contains `amo-metadata.json` with the metadata required for that first listed submission:
+For each subsequent release, run the full release checks and submit the listed build with:
 
 ```text
 npm run sign:listed

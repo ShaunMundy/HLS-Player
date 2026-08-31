@@ -5,12 +5,127 @@
   color: #f5f5f5;
 }
 
-* { box-sizing: border-box; }
-body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #111; }
-.player-shell { width: min(96vw, 1440px); display: grid; gap: 1rem; }
-header { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
-h1 { margin: 0; font-size: 1rem; font-weight: 600; }
-.source { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; opacity: 0.65; font-size: 0.8rem; }
-video { width: 100%; max-height: 82vh; background: #000; }
-.status { min-height: 1.5em; margin: 0; font-size: 0.9rem; opacity: 0.8; }
-.status.error { opacity: 1; }
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: #111;
+}
+
+body {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+}
+
+.player-shell {
+  width: min(96vw, 1440px);
+  display: grid;
+  gap: 1rem;
+}
+
+header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.source {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 0.65;
+  font-size: 0.8rem;
+}
+
+.player-stage {
+  width: 100%;
+  background: #000;
+  overflow: hidden;
+}
+
+video {
+  display: block;
+  width: 100%;
+  max-height: 82vh;
+  background: #000;
+}
+
+.status {
+  min-height: 1.5em;
+  margin: 0;
+  font-size: 0.9rem;
+  opacity: 0.8;
+  transition: opacity 160ms ease;
+}
+
+.status[data-kind="warning"],
+.status[data-kind="error"] {
+  opacity: 1;
+}
+
+.status.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+html.seamless,
+html.seamless body {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  background: #000;
+}
+
+html.seamless body {
+  display: block;
+}
+
+html.seamless .player-shell {
+  width: 100vw;
+  height: 100vh;
+  display: block;
+}
+
+html.seamless header {
+  display: none;
+}
+
+html.seamless .player-stage {
+  width: 100vw;
+  height: 100vh;
+}
+
+html.seamless video {
+  width: 100vw;
+  height: 100vh;
+  max-height: none;
+  object-fit: contain;
+}
+
+html.seamless .status {
+  position: fixed;
+  left: 1rem;
+  bottom: 1rem;
+  z-index: 10;
+  min-height: 0;
+  max-width: min(80vw, 34rem);
+  padding: 0.45rem 0.65rem;
+  border-radius: 7px;
+  background: rgb(0 0 0 / 68%);
+  backdrop-filter: blur(5px);
+  font-size: 0.82rem;
+}

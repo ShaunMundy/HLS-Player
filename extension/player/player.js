@@ -1,78 +1,46 @@
+import { attachHlsPlayback } from "./playback.mjs";
+import { parseHlsSource } from "./stream.mjs";
+import { createPlayerUi } from "./ui.mjs";
+
 const video = document.getElementById("video");
 const status = document.getElementById("status");
 const sourceLabel = document.getElementById("source");
 const requestedSource = new URLSearchParams(window.location.search).get("src");
+const ui = createPlayerUi(video, status);
 
-function setStatus(message, isError = false) {
-  status.textContent = message;
-  status.classList.toggle("error", isError);
-}
+async function initialize() {
+  await ui.initializeSettings();
 
-function parseHlsSource(value) {
-  if (!value) return null;
-
-  try {
-    const parsed = new URL(value);
-    if (!["http:", "https:"].includes(parsed.protocol)) return null;
-    if (!parsed.pathname.toLowerCase().endsWith(".m3u8")) return null;
-    return parsed.href;
-  } catch {
-    return null;
-  }
-}
-
-function getWorkerPath() {
-  if (globalThis.browser?.runtime?.getURL) {
-    return browser.runtime.getURL("vendor/hls.worker.js");
+  const sourceUrl = parseHlsSource(requestedSource);
+  if (!sourceUrl) {
+    ui.setStatus("No valid HLS stream URL was provided.", "error");
+    return;
   }
 
-  return "../vendor/hls.worker.js";
-}
-
-const sourceUrl = parseHlsSource(requestedSource);
-
-if (!sourceUrl) {
-  setStatus("No valid HLS stream URL was provided.", true);
-} else {
   sourceLabel.textContent = sourceUrl;
   sourceLabel.title = sourceUrl;
 
   if (video.canPlayType("application/vnd.apple.mpegurl")) {
     video.src = sourceUrl;
-    setStatus("Using native HLS playback.");
-  } else if (Hls.isSupported()) {
-    const hls = new Hls({
-      enableWorker: true,
-      workerPath: getWorkerPath(),
-      lowLatencyMode: true,
-    });
-    hls.loadSource(sourceUrl);
-    hls.attachMedia(video);
+    ui.setStatus("Using native HLS playback.", "ready", 1800);
+    await ui.startPlayback();
+    return;
+  }
 
-    hls.on(Hls.Events.MANIFEST_PARSED, () => {
-      setStatus("Live stream ready.");
-      video.play().catch(() => setStatus("Stream ready. Press play to start."));
-    });
-
-    hls.on(Hls.Events.ERROR, (_event, data) => {
-      if (!data.fatal) return;
-
-      if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-        setStatus("Network error. Retrying stream…", true);
-        hls.startLoad();
-        return;
-      }
-
-      if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
-        setStatus("Media error. Recovering playback…", true);
-        hls.recoverMediaError();
-        return;
-      }
-
-      setStatus(`Playback failed: ${data.details}`, true);
-      hls.destroy();
-    });
-  } else {
-    setStatus("This browser does not provide the MediaSource support required for HLS playback.", true);
+  if (!attachHlsPlayback(video, sourceUrl, ui.setStatus, ui.startPlayback)) {
+    ui.setStatus("This browser does not provide the MediaSource support required for HLS playback.", "error");
   }
 }
+
+video.addEventListener("click", () => {
+  if (video.controls) return;
+  if (video.paused) ui.startPlayback();
+  else video.pause();
+});
+
+video.addEventListener("playing", ui.hideStatus);
+
+initialize().catch((error) => {
+  console.error(error);
+  ui.setStatus("Player initialization failed.", "error");
+});
