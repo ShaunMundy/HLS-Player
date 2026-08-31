@@ -1,5 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="HLS Player">
-  <rect x="4" y="4" width="56" height="56" rx="12" fill="#181818"/>
-  <path d="M26 19.5v25l21-12.5-21-12.5Z" fill="#f5f5f5"/>
-  <path d="M17 21v22M11 25v14" fill="none" stroke="#f5f5f5" stroke-width="4" stroke-linecap="round" opacity=".72"/>
-</svg>

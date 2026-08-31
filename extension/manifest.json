@@ -4,9 +4,12 @@
   "version": "0.1.0",
   "description": "Play HLS (.m3u8) streams directly in a clean local video player.",
   "icons": {
-    "32": "icons/hls-player.svg",
-    "64": "icons/hls-player.svg",
-    "96": "icons/hls-player.svg"
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "64": "icons/icon-64.png",
+    "96": "icons/icon-96.png",
+    "128": "icons/icon-128.png"
   },
   "permissions": [
     "webRequest",
