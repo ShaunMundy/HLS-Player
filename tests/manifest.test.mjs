@@ -18,6 +18,7 @@ test("release metadata keeps the stable extension identity", () => {
 
 test("Firefox compatibility and privacy declarations stay explicit", () => {
   assert.equal(manifest.browser_specific_settings.gecko.strict_min_version, "140.0");
+  assert.equal(manifest.browser_specific_settings.gecko_android.strict_min_version, "142.0");
   assert.deepEqual(
     manifest.browser_specific_settings.gecko.data_collection_permissions.required,
     ["none"]
