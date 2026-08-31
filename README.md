@@ -24,10 +24,13 @@ Desktop Firefox 140 and later is supported. Firefox for Android requires 142 or 
 
 ## Development
 
-Requirements:
+Build environment for the submitted 0.2.0 release:
 
-- Node.js 22 or later
-- npm
+- Operating system: Windows 11, macOS, or Linux; no platform-specific build tools are required.
+- Reproduction environment used for this submission: Windows 11.
+- Node.js: 24.19.0
+- npm: 11.17.0
+- Dependency versions are locked by package-lock.json (hls.js 1.7.1 and web-ext 10.6.0).
 
 Install the exact locked dependency set:
 
