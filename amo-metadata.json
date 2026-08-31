@@ -5,7 +5,9 @@
   "description": {
     "en-US": "HLS Player intercepts top-level HTTP Live Streaming (.m3u8) navigations and opens them in a clean local video player. Playback uses Firefox's native HLS support when available and otherwise the bundled hls.js library. The extension has no accounts, analytics, telemetry, remote code, or developer-operated service."
   },
-  "categories": ["photos-music-videos"],
+  "categories": [
+    "photos-music-videos"
+  ],
   "privacy_policy": {
     "en-US": "HLS Player does not collect or transmit personal data, browsing history, stream URLs, playback information, telemetry, or analytics. Seamless mode and the video-controls preference are stored only in browser.storage.local and are not synchronized or sent to any third party."
   },
@@ -13,7 +15,7 @@
     "license": "MIT",
     "approval_notes": "HTTP/HTTPS host access plus webRequest and webRequestBlocking are required to redirect top-level .m3u8 navigations before Firefox treats them as downloads. The listener is restricted to main_frame requests and .m3u8 pathnames. The storage permission stores only two local player preferences: Seamless mode and whether native controls are shown. hls.js is pinned in package-lock.json and bundled locally; no remote code is executed. Reproduce with Node.js 24, npm ci, then npm run build.",
     "release_notes": {
-      "en-US": "Adds persistent Seamless mode and optional native video controls, both stored locally in Firefox. Also adds the new HLS Player icon and quieter transient playback status messages."
+      "en-US": "Initial public AMO release. Adds persistent Seamless mode and optional native video controls, both stored locally in Firefox. Also adds the new HLS Player icon and quieter transient playback status messages."
     }
   }
 }
