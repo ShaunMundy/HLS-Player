@@ -13,12 +13,20 @@ function parseHlsSource(value) {
 
   try {
     const parsed = new URL(value);
-    if (!['http:', 'https:'].includes(parsed.protocol)) return null;
-    if (!parsed.pathname.toLowerCase().endsWith('.m3u8')) return null;
+    if (!["http:", "https:"].includes(parsed.protocol)) return null;
+    if (!parsed.pathname.toLowerCase().endsWith(".m3u8")) return null;
     return parsed.href;
   } catch {
     return null;
   }
+}
+
+function getWorkerPath() {
+  if (globalThis.browser?.runtime?.getURL) {
+    return browser.runtime.getURL("vendor/hls.worker.js");
+  }
+
+  return "../vendor/hls.worker.js";
 }
 
 const sourceUrl = parseHlsSource(requestedSource);
@@ -33,7 +41,11 @@ if (!sourceUrl) {
     video.src = sourceUrl;
     setStatus("Using native HLS playback.");
   } else if (Hls.isSupported()) {
-    const hls = new Hls({ enableWorker: true, lowLatencyMode: true });
+    const hls = new Hls({
+      enableWorker: true,
+      workerPath: getWorkerPath(),
+      lowLatencyMode: true,
+    });
     hls.loadSource(sourceUrl);
     hls.attachMedia(video);
 
