@@ -9,5 +9,6 @@ const targetDir = resolve(root, "extension", "vendor");
 
 await mkdir(targetDir, { recursive: true });
 await copyFile(resolve(packageRoot, "dist", "hls.min.js"), resolve(targetDir, "hls.min.js"));
+await copyFile(resolve(packageRoot, "dist", "hls.worker.js"), resolve(targetDir, "hls.worker.js"));
 await copyFile(resolve(packageRoot, "LICENSE"), resolve(targetDir, "LICENSE-hls.txt"));
-console.log(`Vendored hls.js and license -> ${targetDir}`);
+console.log(`Vendored hls.js, worker, and license -> ${targetDir}`);
