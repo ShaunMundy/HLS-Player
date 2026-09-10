@@ -9,7 +9,7 @@
 <body>
   <main class="settings-shell">
     <header class="settings-header">
-      <img src="../icons/icon-32.png" width="32" height="32" alt="">
+      <img src="../icons/icon-32.png" width="28" height="28" alt="">
       <div>
         <h1>HLS Player</h1>
         <p>Player settings</p>
@@ -27,9 +27,24 @@
     <label class="setting-row">
       <span>
         <strong>Show video controls</strong>
-        <small>Use Firefox's native playback controls.</small>
+        <small>Use Firefox's native controls.</small>
       </span>
       <input id="show-controls" type="checkbox">
+    </label>
+
+    <label class="setting-row setting-row-select">
+      <span>
+        <strong>Display / Ratio</strong>
+        <small>Video sizing and aspect ratio.</small>
+      </span>
+      <select id="display-mode">
+        <option value="fill">Fill</option>
+        <option value="best-fit">Best fit</option>
+        <option value="original">Original</option>
+        <option value="native">Native</option>
+        <option value="16-9">16:9</option>
+        <option value="4-3">4:3</option>
+      </select>
     </label>
 
     <p id="save-status" class="save-status" role="status" aria-live="polite">Saved locally in Firefox.</p>
