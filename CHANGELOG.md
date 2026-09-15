@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0] - 2026-09-16
+
+### Added
+- Display / Ratio modes: Fill, Best fit, Original, Native, 16:9, and 4:3.
+
+### Changed
+- The settings popup now follows Firefox's preferred light/dark colour scheme.
+- Reduced popup dimensions and spacing for a denser settings layout.
+
 ## [0.2.0] - 2026-08-31
 
 ### Added
@@ -16,11 +25,6 @@ All notable changes to this project will be documented in this file.
 - Clicking the video toggles playback when native controls are hidden.
 
 ## [0.1.0] - 2026-08-31
-
-### 0.2.90 private beta
-- Added Display / Ratio modes: Fill, Best fit, Original, Native, 16:9, and 4:3.
-- Made the settings popup follow Firefox's preferred light/dark colour scheme.
-- Reduced popup dimensions and spacing for a denser settings layout.
 
 ### Added
 - Automatic interception of top-level `.m3u8` navigations.
