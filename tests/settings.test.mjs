@@ -11,6 +11,7 @@ test("player preference defaults are conservative", () => {
   assert.deepEqual(DEFAULT_SETTINGS, {
     seamless: false,
     showControls: true,
+    displayMode: "best-fit",
   });
 });
 
@@ -18,6 +19,7 @@ test("stored player preferences are normalized", () => {
   assert.deepEqual(normalizeSettings({ seamless: true, showControls: false }), {
     seamless: true,
     showControls: false,
+    displayMode: "best-fit",
   });
   assert.deepEqual(normalizeSettings({}), DEFAULT_SETTINGS);
 });
@@ -33,9 +35,13 @@ test("player preferences round-trip through local storage", async () => {
     },
   };
 
-  await saveSettings({ seamless: true, showControls: false }, storage);
+  await saveSettings(
+    { seamless: true, showControls: false, displayMode: "native" },
+    storage,
+  );
   assert.deepEqual(await loadSettings(storage), {
     seamless: true,
     showControls: false,
+    displayMode: "native",
   });
 });
