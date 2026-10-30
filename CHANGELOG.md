@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.2] - 2026-10-30
+
+### Added
+- Live 30-second throughput sparkline in the stream information overlay.
+- Session download total for HLS media fragments.
+- Regression tests for fragment loader statistics and sparkline history.
+
+### Fixed
+- Read hls.js fragment and low-latency part load statistics for throughput measurement.
+
+### Changed
+- More translucent stream information panel with a restrained frosted-glass treatment.
+
+## [0.3.1] - 2026-10-30
+
+### Added
+- Live stream information overlay with codec, frame rate, HLS and playback diagnostics.
+
 ## [0.3.0] - 2026-09-16
 
 ### Added
