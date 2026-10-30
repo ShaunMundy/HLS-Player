@@ -18,18 +18,74 @@ export function fragmentTransferSample(data, time) {
   return { time, bytes, rate: bytes * 8000 / elapsed };
 }
 
+// Curve points are interpolated for display only, never recorded as measurements.
 export function throughputSparkline(samples, now, width = 300, height = 64) {
-  const visible = samples.filter(s => Number.isFinite(s.time) &&
-    s.time >= now - 30000 && s.time <= now &&
+  const left = now - 30000;
+  const empty = { line: '', area: '', continuation: '', max: 0, current: null, age: null };
+  const ordered = samples.filter(s => Number.isFinite(s.time) && s.time <= now &&
     Number.isFinite(s.rate) && s.rate > 0).sort((a, b) => a.time - b.time);
-  if (!visible.length) {
-    return { line: '', area: '', continuation: '', max: 0, current: null, age: null };
+  const knots = [];
+  for (const sample of ordered) {
+    if (knots.length && knots[knots.length - 1].time === sample.time) {
+      knots[knots.length - 1] = sample;
+    } else {
+      knots.push(sample);
+    }
   }
+  const recent = knots.filter(s => s.time >= left);
+  if (!recent.length) return empty;
 
-  const peak = Math.max(...visible.map(s => s.rate));
-  const points = visible.map(s => ({
-    x: Math.max(0, Math.min(width, (s.time - now + 30000) * width / 30000)),
-    y: Math.max(4, height - 5 - s.rate / peak * (height - 13))
+  // Preserve the preceding real observation so the curve enters at x=0
+  // instead of opening a gap when the oldest visible sample expires.
+  const previous = knots.filter(s => s.time < left).at(-1);
+  const curve = previous ? [previous, ...recent] : recent;
+  const slopes = curve.slice(1).map((s, i) =>
+    (s.rate - curve[i].rate) / (s.time - curve[i].time));
+  const tangents = curve.map((s, i) => {
+    if (i === 0) return slopes[0] ?? 0;
+    if (i === curve.length - 1) return slopes[i - 1];
+    const a = slopes[i - 1], b = slopes[i];
+    if (a * b <= 0) return 0;
+    const h0 = s.time - curve[i - 1].time;
+    const h1 = curve[i + 1].time - s.time;
+    const w0 = 2 * h1 + h0, w1 = h1 + 2 * h0;
+    return (w0 + w1) / (w0 / a + w1 / b);
+  });
+
+  const rendered = [];
+  function addPoint(time, rate) {
+    if (rendered.length && rendered[rendered.length - 1].time === time) return;
+    rendered.push({ time, rate });
+  }
+  for (let i = 0; i < curve.length - 1; i++) {
+    const from = curve[i], to = curve[i + 1];
+    const start = Math.max(left, from.time);
+    const stop = Math.min(now, to.time);
+    if (stop < start) continue;
+    const h = to.time - from.time;
+    const rateAt = time => {
+      const u = (time - from.time) / h;
+      const u2 = u * u, u3 = u2 * u;
+      const value = (2 * u3 - 3 * u2 + 1) * from.rate +
+        (u3 - 2 * u2 + u) * h * tangents[i] +
+        (-2 * u3 + 3 * u2) * to.rate +
+        (u3 - u2) * h * tangents[i + 1];
+      return Math.max(Math.min(from.rate, to.rate),
+        Math.min(Math.max(from.rate, to.rate), value));
+    };
+    addPoint(start, rateAt(start));
+    // A 500 ms rendering mesh smooths the line between real fragments.
+    for (let time = Math.floor(start / 500) * 500 + 500; time < stop; time += 500) {
+      addPoint(time, rateAt(time));
+    }
+    addPoint(stop, rateAt(stop));
+  }
+  const latest = recent[recent.length - 1];
+  addPoint(latest.time, latest.rate);
+  const peak = Math.max(...rendered.map(p => p.rate));
+  const points = rendered.map(p => ({
+    x: Math.max(0, Math.min(width, (p.time - left) * width / 30000)),
+    y: Math.max(4, height - 5 - p.rate / peak * (height - 13))
   }));
   const coords = points.map(p => p.x.toFixed(1) + ' ' + p.y.toFixed(1));
   const line = coords.length === 1 ?
@@ -39,16 +95,11 @@ export function throughputSparkline(samples, now, width = 300, height = 64) {
   const last = points[points.length - 1];
   const area = line + ' L ' + last.x.toFixed(1) +
     ' ' + height + ' L ' + points[0].x.toFixed(1) + ' ' + height + ' Z';
-
-  // A dashed extension means "last measured", not a new measurement.
-  const age = Math.max(0, now - visible[visible.length - 1].time);
+  const age = Math.max(0, now - latest.time);
   const continuation = age >= 1000 && last.x < width ?
     'M ' + last.x.toFixed(1) + ' ' + last.y.toFixed(1) +
     ' L ' + width + ' ' + last.y.toFixed(1) : '';
-  return {
-    line, area, continuation, max: peak,
-    current: visible[visible.length - 1].rate, age
-  };
+  return { line, area, continuation, max: peak, current: latest.rate, age };
 }
 
 export function bufferedAhead(video) {
@@ -167,7 +218,7 @@ export function createStreamInfoOsd(video, stage) {
     measuredRate = sample.rate;
     totalBytes += sample.bytes;
     samples.push(sample);
-    samples = samples.filter(s => s.time >= sample.time - 30000);
+    samples = samples.filter(s => s.time >= sample.time - 60000);
     if (!panel.hidden) update();
   }
 
@@ -201,12 +252,11 @@ export function createStreamInfoOsd(video, stage) {
     const visibleSamples = samples.filter(s => s.time >= now - 30000);
     put('throughput', formatRate(visibleSamples.length ? measuredRate : null));
     put('downloaded', hls ? formatDownloaded(totalBytes) : '—');
-    const graph = throughputSparkline(visibleSamples, now);
+    const graph = throughputSparkline(samples, now);
     sparkLine.setAttribute('d', graph.line);
     sparkArea.setAttribute('d', graph.area);
     sparkContinuation.setAttribute('d', graph.continuation);
-    sparkCurrent.textContent = graph.current === null ? '—' :
-      (graph.age > 5000 ? 'LAST ' : '') + formatRate(graph.current);
+    sparkCurrent.textContent = formatRate(graph.current);
     put('buffer', number(bufferedAhead(video)) + ' s');
     put('latency', Number.isFinite(hls?.latency) ? number(hls.latency) + ' s' : '—');
     put('state', video.error ? 'Error' : video.ended ? 'Ended' : video.paused ? 'Paused' : video.readyState < 3 ? 'Buffering' : 'Playing');
