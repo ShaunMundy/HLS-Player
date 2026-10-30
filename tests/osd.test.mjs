@@ -92,7 +92,7 @@ test('historical line uses a fine rendering mesh but stops at the last real samp
     { time: 20000, rate: 6000000 },
     { time: 30000, rate: 3000000 }
   ], 35000);
-  const positions = [...chart.line.matchAll(/(?:M|L) (\\d+\\.\\d+) (\\d+\\.\\d+)/g)];
+  const positions = [...chart.line.matchAll(/(?:M|L) ([0-9]+[.][0-9]+) ([0-9]+[.][0-9]+)/g)];
   assert.ok(positions.length > 25, 'interpolation should render more than one vertex per fragment');
   const lastX = Number(positions[positions.length - 1][1]);
   assert.equal(lastX, 250);
