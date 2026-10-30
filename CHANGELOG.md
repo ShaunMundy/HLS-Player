@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.3] - 2026-10-30
+
+### Changed
+- Show the last measured throughput in the chart header instead of the peak.
+- Extend the last measurement with a dashed line until the 30-second history expires.
+- Use a finer chart stroke and a simple "30 seconds" caption.
+- Shorten and visually separate the playlist metadata footnote.
+
 ## [0.3.2] - 2026-10-30
 
 ### Added
