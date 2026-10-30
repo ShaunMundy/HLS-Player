@@ -102,6 +102,10 @@ export function throughputSparkline(samples, now, width = 300, height = 64) {
   return { line, area, continuation, max: peak, current: latest.rate, age };
 }
 
+export function isOutsideStreamInfo(panel, toggle, target) {
+  return !panel.contains(target) && !toggle.contains(target);
+}
+
 export function bufferedAhead(video) {
   for (let i = 0; i < video.buffered.length; i++) {
     if (video.buffered.start(i) <= video.currentTime && video.currentTime <= video.buffered.end(i)) {
@@ -115,7 +119,32 @@ export function createStreamInfoOsd(video, stage) {
   const toggle = document.createElement('button');
   toggle.type = 'button';
   toggle.className = 'stream-info-toggle';
-  toggle.textContent = 'ⓘ';
+  // Draw exactly one centered ring; the button itself has no visible border.
+  const ns = 'http://www.w3.org/2000/svg';
+  const icon = document.createElementNS(ns, 'svg');
+  icon.setAttribute('viewBox', '0 0 24 24');
+  icon.setAttribute('aria-hidden', 'true');
+  icon.setAttribute('focusable', 'false');
+  const ring = document.createElementNS(ns, 'circle');
+  ring.setAttribute('cx', '12');
+  ring.setAttribute('cy', '12');
+  ring.setAttribute('r', '9');
+  ring.setAttribute('fill', 'none');
+  ring.setAttribute('stroke', 'currentColor');
+  ring.setAttribute('stroke-width', '1.6');
+  const stem = document.createElementNS(ns, 'path');
+  stem.setAttribute('d', 'M12 11v5');
+  stem.setAttribute('fill', 'none');
+  stem.setAttribute('stroke', 'currentColor');
+  stem.setAttribute('stroke-width', '1.8');
+  stem.setAttribute('stroke-linecap', 'round');
+  const dot = document.createElementNS(ns, 'circle');
+  dot.setAttribute('cx', '12');
+  dot.setAttribute('cy', '8');
+  dot.setAttribute('r', '1.1');
+  dot.setAttribute('fill', 'currentColor');
+  icon.append(ring, stem, dot);
+  toggle.append(icon);
   toggle.title = 'Stream information (I)';
   toggle.setAttribute('aria-label', 'Toggle stream information');
   toggle.setAttribute('aria-keyshortcuts', 'I');
@@ -288,6 +317,13 @@ export function createStreamInfoOsd(video, stage) {
   toggle.addEventListener('click', event => { event.stopPropagation(); setOpen(panel.hidden); });
   close.addEventListener('click', event => { event.stopPropagation(); setOpen(false); toggle.focus(); });
   panel.addEventListener('click', event => event.stopPropagation());
+  document.addEventListener('click', event => {
+    if (panel.hidden || !isOutsideStreamInfo(panel, toggle, event.target)) return;
+    setOpen(false);
+    // The first click outside dismisses the panel without pausing the video.
+    // Subsequent clicks retain the player's normal pause/resume behavior.
+    if (event.target === video && !video.controls) event.stopPropagation();
+  }, true);
   stage.addEventListener('pointermove', reveal, { passive: true });
   stage.addEventListener('pointerleave', () => { if (panel.hidden) stage.classList.remove('stream-info-active'); });
   document.addEventListener('keydown', event => {
