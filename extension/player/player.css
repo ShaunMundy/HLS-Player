@@ -139,14 +139,21 @@ html.seamless .status {
 .player-stage { position: relative; }
 .stream-info-toggle {
   position: absolute; z-index: 21; top: 14px; right: 14px;
-  width: 34px; height: 34px; border: 1px solid rgb(255 255 255 / 28%);
-  border-radius: 50%; color: #fff; background: rgb(24 26 29 / 88%);
-  font-size: 22px; cursor: pointer; opacity: 0; pointer-events: none;
-  transition: opacity 180ms ease;
+  display: grid; place-items: center;
+  width: 34px; height: 34px; padding: 0; border: 0;
+  border-radius: 50%; color: #f6f4f2; background: transparent;
+  cursor: pointer; opacity: 0; pointer-events: none;
+  transition: opacity 180ms ease, color 180ms ease, background 180ms ease;
 }
+.stream-info-toggle svg { display: block; width: 25px; height: 25px; }
 .player-stage.stream-info-active .stream-info-toggle,
 .player-stage:focus-within .stream-info-toggle { opacity: 1; pointer-events: auto; }
-.stream-info-toggle:hover, .stream-info-toggle:focus-visible { border-color: #e7885d; }
+.stream-info-toggle:hover {
+  color: #f4a47a; background: rgb(24 26 29 / 26%);
+}
+.stream-info-toggle:focus-visible {
+  outline: 2px solid #e7885d; outline-offset: 2px;
+}
 .stream-info-panel {
   position: absolute; z-index: 20; top: 56px; right: 14px;
   width: min(340px, calc(100% - 28px)); max-height: min(78vh, 720px);
