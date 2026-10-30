@@ -66,3 +66,42 @@ test('the chart does not extend beyond a sample captured just now', () => {
   assert.equal(chart.continuation, '');
   assert.ok(chart.line);
 });
+
+test('curve enters the left border continuously as observations age out', () => {
+  const samples = [
+    { time: 10000, rate: 1000000 },
+    { time: 20000, rate: 3000000 },
+    { time: 30000, rate: 2000000 },
+    { time: 40000, rate: 4000000 }
+  ];
+  for (const now of [45000, 50001, 60001]) {
+    const chart = throughputSparkline(samples, now);
+    if (now === 60001) {
+      assert.equal(chart.current, 4000000);
+      assert.ok(chart.line.startsWith('M 0.0 '));
+    } else {
+      assert.ok(chart.line.startsWith('M 0.0 '));
+    }
+    assert.ok(chart.continuation);
+  }
+});
+
+test('historical line uses a fine rendering mesh but stops at the last real sample', () => {
+  const chart = throughputSparkline([
+    { time: 10000, rate: 2000000 },
+    { time: 20000, rate: 6000000 },
+    { time: 30000, rate: 3000000 }
+  ], 35000);
+  const positions = [...chart.line.matchAll(/(?:M|L) (\\d+\\.\\d+) (\\d+\\.\\d+)/g)];
+  assert.ok(positions.length > 25, 'interpolation should render more than one vertex per fragment');
+  const lastX = Number(positions[positions.length - 1][1]);
+  assert.equal(lastX, 250);
+  assert.equal(chart.current, 3000000);
+  assert.ok(chart.continuation.endsWith(' L 300 ' + positions[positions.length - 1][2]));
+});
+
+test('single real observation expires without becoming a synthetic plateau', () => {
+  const sample = { time: 30000, rate: 1700000 };
+  assert.equal(throughputSparkline([sample], 59000).current, 1700000);
+  assert.equal(throughputSparkline([sample], 60001).current, null);
+});
