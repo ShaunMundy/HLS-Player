@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 2026-10-30
+
+### Added
+- Live Stream Info OSD with resolution, codec, frame-rate, dropped-frame, bitrate, buffer, and latency diagnostics.
+- Lightweight 30-second throughput sparkline based on HLS media fragment load statistics.
+- Session download total for HLS media fragments.
+
+### Changed
+- Translucent, responsive diagnostic panel with improved spacing for 720p windows.
+- Single-ring info control, keyboard shortcuts, and close-on-outside-click behavior.
+- No new privileges, external services, data collection, or tracking.
+
 ## [0.3.6] - 2026-10-30
 
 ### Fixed
