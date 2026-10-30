@@ -199,4 +199,4 @@ html.seamless .status {
 }
 .stream-info-spark-continuation { stroke-dasharray: 4 5; opacity: .8; }
 .stream-info-spark-area { fill: rgb(240 146 101 / 12%); stroke: none; }
-.stream-info-chart-axis { color: #aaacb2; font-size: 8px; }
+.stream-info-chart-axis { color: #aaacb2; font-size: 8px; justify-content: flex-end; }
