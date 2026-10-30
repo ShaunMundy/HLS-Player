@@ -115,3 +115,21 @@ test('outside click dismisses the overlay but clicks within it do not', () => {
   assert.equal(isOutsideStreamInfo(panel, toggle, outsideVideo), true);
   assert.equal(isOutsideStreamInfo(panel, toggle, toolbar), true);
 });
+
+test('video click shield is wired above the video and below OSD controls', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const js = await readFile(new URL('../extension/player/osd.mjs', import.meta.url), 'utf8');
+  const css = await readFile(new URL('../extension/player/player.css', import.meta.url), 'utf8');
+  assert.match(js, /stage\.append\(dismiss, toggle, panel\)/);
+  assert.match(js, /dismiss\.addEventListener\('click'/);
+  assert.match(js, /dismiss\.hidden = !open/);
+  assert.match(css, /\.stream-info-dismiss \{[^}]*z-index: 19;/);
+  assert.match(css, /\.stream-info-dismiss\[hidden\] \{ display: none; \}/);
+});
+
+test('compact OSD retains fallback scrolling while reducing graph height', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const css = await readFile(new URL('../extension/player/player.css', import.meta.url), 'utf8');
+  assert.match(css, /height: 54px; margin: 6px 0 2px;/);
+  assert.match(css, /max-height: min\(calc\(100% - 56px\), calc\(100dvh - 76px\)\)/);
+});
