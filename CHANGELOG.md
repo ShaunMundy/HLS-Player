@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.6] - 2026-10-30
+
+### Fixed
+- Clicks on the video now dismiss the open OSD through an invisible shield, without toggling playback or triggering native controls.
+- More compact OSD spacing and chart height so a 720p playback window can show the entire panel more comfortably.
+- Move the info button and OSD closer together while keeping a visible keyboard focus state.
+- Retain scrolling for unusually small windows.
+
 ## [0.3.5] - 2026-10-30
 
 ### Changed
