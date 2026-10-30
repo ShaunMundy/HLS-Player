@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.4] - 2026-10-30
+
+### Changed
+- Remove the transient "LAST" label from the network activity readout.
+- Smooth the historical throughput line at 500 ms rendering intervals between genuine fragment measurements.
+- Keep the preceding fragment sample for seamless clipping at the left edge of the 30-second chart.
+- Place the "30 seconds" time-range caption at the lower right.
+- Preserve the dashed hold-last-measurement extension without reporting interpolated points as data.
+
 ## [0.3.3] - 2026-10-30
 
 ### Changed
