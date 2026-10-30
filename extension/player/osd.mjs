@@ -150,6 +150,13 @@ export function createStreamInfoOsd(video, stage) {
   toggle.setAttribute('aria-keyshortcuts', 'I');
   toggle.setAttribute('aria-expanded', 'false');
 
+  // This transparent scrim intercepts video clicks before native controls can
+  // pause playback. The panel and info button remain above it.
+  const dismiss = document.createElement('div');
+  dismiss.className = 'stream-info-dismiss';
+  dismiss.hidden = true;
+  dismiss.setAttribute('aria-hidden', 'true');
+
   const panel = document.createElement('section');
   panel.className = 'stream-info-panel';
   panel.hidden = true;
@@ -230,7 +237,7 @@ export function createStreamInfoOsd(video, stage) {
   note.className = 'stream-info-note';
   note.textContent = 'Declared bitrate and stream FPS come from the playlist.';
   panel.append(note);
-  stage.append(toggle, panel);
+  stage.append(dismiss, toggle, panel);
 
   let hls = null;
   let interval = null;
@@ -301,6 +308,7 @@ export function createStreamInfoOsd(video, stage) {
 
   function setOpen(open) {
     panel.hidden = !open;
+    dismiss.hidden = !open;
     toggle.setAttribute('aria-expanded', String(open));
     clearInterval(interval);
     interval = null;
@@ -316,13 +324,15 @@ export function createStreamInfoOsd(video, stage) {
 
   toggle.addEventListener('click', event => { event.stopPropagation(); setOpen(panel.hidden); });
   close.addEventListener('click', event => { event.stopPropagation(); setOpen(false); toggle.focus(); });
+  dismiss.addEventListener('click', event => {
+    event.preventDefault();
+    event.stopPropagation();
+    setOpen(false);
+  });
   panel.addEventListener('click', event => event.stopPropagation());
   document.addEventListener('click', event => {
-    if (panel.hidden || !isOutsideStreamInfo(panel, toggle, event.target)) return;
+    if (panel.hidden || event.target === dismiss || !isOutsideStreamInfo(panel, toggle, event.target)) return;
     setOpen(false);
-    // The first click outside dismisses the panel without pausing the video.
-    // Subsequent clicks retain the player's normal pause/resume behavior.
-    if (event.target === video && !video.controls) event.stopPropagation();
   }, true);
   stage.addEventListener('pointermove', reveal, { passive: true });
   stage.addEventListener('pointerleave', () => { if (panel.hidden) stage.classList.remove('stream-info-active'); });
