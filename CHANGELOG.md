@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.5] - 2026-10-30
+
+### Changed
+- Replace the double-ring stream-info button with a centered single-ring SVG icon and no visible outer button border.
+- Close the stream-information overlay when clicking outside the panel, including the player background.
+- Consume the first outside click on the video so dismissing the overlay does not accidentally pause playback.
+- Keep keyboard focus indication for the info button and existing I/Escape shortcuts.
+
 ## [0.3.4] - 2026-10-30
 
 ### Changed
