@@ -1,6 +1,6 @@
 ﻿import test from 'node:test';
 import assert from 'node:assert/strict';
-import { bufferedAhead, formatRate, formatDownloaded, fragmentTransferSample, throughputSparkline } from '../extension/player/osd.mjs';
+import { bufferedAhead, formatRate, formatDownloaded, fragmentTransferSample, throughputSparkline, isOutsideStreamInfo } from '../extension/player/osd.mjs';
 
 test('buffer ahead uses the buffered range containing the playhead', () => {
   const video = { currentTime: 12, buffered: { length: 2, start: i => [0, 10][i], end: i => [5, 19][i] } };
@@ -104,4 +104,14 @@ test('single real observation expires without becoming a synthetic plateau', () 
   const sample = { time: 30000, rate: 1700000 };
   assert.equal(throughputSparkline([sample], 59000).current, 1700000);
   assert.equal(throughputSparkline([sample], 60001).current, null);
+});
+
+test('outside click dismisses the overlay but clicks within it do not', () => {
+  const panelChild = {}, toggleIcon = {}, outsideVideo = {}, toolbar = {};
+  const panel = { contains: target => target === panelChild };
+  const toggle = { contains: target => target === toggleIcon };
+  assert.equal(isOutsideStreamInfo(panel, toggle, panelChild), false);
+  assert.equal(isOutsideStreamInfo(panel, toggle, toggleIcon), false);
+  assert.equal(isOutsideStreamInfo(panel, toggle, outsideVideo), true);
+  assert.equal(isOutsideStreamInfo(panel, toggle, toolbar), true);
 });
