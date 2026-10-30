@@ -1,12 +1,14 @@
 import { attachHlsPlayback } from "./playback.mjs";
 import { parseHlsSource } from "./stream.mjs";
 import { createPlayerUi } from "./ui.mjs";
+import { createStreamInfoOsd } from "./osd.mjs";
 
 const video = document.getElementById("video");
 const status = document.getElementById("status");
 const sourceLabel = document.getElementById("source");
 const requestedSource = new URLSearchParams(window.location.search).get("src");
 const ui = createPlayerUi(video, status);
+const osd = createStreamInfoOsd(video, document.querySelector(".player-stage"));
 
 async function initialize() {
   await ui.initializeSettings();
@@ -27,7 +29,7 @@ async function initialize() {
     return;
   }
 
-  if (!attachHlsPlayback(video, sourceUrl, ui.setStatus, ui.startPlayback)) {
+  if (!attachHlsPlayback(video, sourceUrl, ui.setStatus, ui.startPlayback, osd.setHls)) {
     ui.setStatus("This browser does not provide the MediaSource support required for HLS playback.", "error");
   }
 }

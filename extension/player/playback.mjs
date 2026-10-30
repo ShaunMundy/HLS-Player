@@ -1,6 +1,6 @@
 import { getWorkerPath } from "./stream.mjs";
 
-export function attachHlsPlayback(video, sourceUrl, setStatus, startPlayback) {
+export function attachHlsPlayback(video, sourceUrl, setStatus, startPlayback, setHls = () => {}) {
   const Hls = globalThis.Hls;
   if (!Hls?.isSupported()) return false;
 
@@ -10,6 +10,7 @@ export function attachHlsPlayback(video, sourceUrl, setStatus, startPlayback) {
     lowLatencyMode: true,
   });
 
+  setHls(hls);
   hls.loadSource(sourceUrl);
   hls.attachMedia(video);
 
@@ -34,6 +35,7 @@ export function attachHlsPlayback(video, sourceUrl, setStatus, startPlayback) {
     }
 
     setStatus(`Playback failed: ${data.details}`, "error");
+    setHls(null);
     hls.destroy();
   });
 

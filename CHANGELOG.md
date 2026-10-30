@@ -2,6 +2,69 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 2026-10-30
+
+### Added
+- Live Stream Info OSD with resolution, codec, frame-rate, dropped-frame, bitrate, buffer, and latency diagnostics.
+- Lightweight 30-second throughput sparkline based on HLS media fragment load statistics.
+- Session download total for HLS media fragments.
+
+### Changed
+- Translucent, responsive diagnostic panel with improved spacing for 720p windows.
+- Single-ring info control, keyboard shortcuts, and close-on-outside-click behavior.
+- No new privileges, external services, data collection, or tracking.
+
+## [0.3.6] - 2026-10-30
+
+### Fixed
+- Clicks on the video now dismiss the open OSD through an invisible shield, without toggling playback or triggering native controls.
+- More compact OSD spacing and chart height so a 720p playback window can show the entire panel more comfortably.
+- Move the info button and OSD closer together while keeping a visible keyboard focus state.
+- Retain scrolling for unusually small windows.
+
+## [0.3.5] - 2026-10-30
+
+### Changed
+- Replace the double-ring stream-info button with a centered single-ring SVG icon and no visible outer button border.
+- Close the stream-information overlay when clicking outside the panel, including the player background.
+- Consume the first outside click on the video so dismissing the overlay does not accidentally pause playback.
+- Keep keyboard focus indication for the info button and existing I/Escape shortcuts.
+
+## [0.3.4] - 2026-10-30
+
+### Changed
+- Remove the transient "LAST" label from the network activity readout.
+- Smooth the historical throughput line at 500 ms rendering intervals between genuine fragment measurements.
+- Keep the preceding fragment sample for seamless clipping at the left edge of the 30-second chart.
+- Place the "30 seconds" time-range caption at the lower right.
+- Preserve the dashed hold-last-measurement extension without reporting interpolated points as data.
+
+## [0.3.3] - 2026-10-30
+
+### Changed
+- Show the last measured throughput in the chart header instead of the peak.
+- Extend the last measurement with a dashed line until the 30-second history expires.
+- Use a finer chart stroke and a simple "30 seconds" caption.
+- Shorten and visually separate the playlist metadata footnote.
+
+## [0.3.2] - 2026-10-30
+
+### Added
+- Live 30-second throughput sparkline in the stream information overlay.
+- Session download total for HLS media fragments.
+- Regression tests for fragment loader statistics and sparkline history.
+
+### Fixed
+- Read hls.js fragment and low-latency part load statistics for throughput measurement.
+
+### Changed
+- More translucent stream information panel with a restrained frosted-glass treatment.
+
+## [0.3.1] - 2026-10-30
+
+### Added
+- Live stream information overlay with codec, frame rate, HLS and playback diagnostics.
+
 ## [0.3.0] - 2026-09-16
 
 ### Added
