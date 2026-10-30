@@ -19,12 +19,15 @@ export function fragmentTransferSample(data, time) {
 }
 
 export function throughputSparkline(samples, now, width = 300, height = 64) {
-  const valid = samples.filter(s => Number.isFinite(s.time) &&
+  const visible = samples.filter(s => Number.isFinite(s.time) &&
     s.time >= now - 30000 && s.time <= now &&
-    Number.isFinite(s.rate) && s.rate > 0);
-  if (valid.length === 0) return { line: '', area: '', max: 0 };
-  const peak = Math.max(...valid.map(s => s.rate));
-  const points = valid.map(s => ({
+    Number.isFinite(s.rate) && s.rate > 0).sort((a, b) => a.time - b.time);
+  if (!visible.length) {
+    return { line: '', area: '', continuation: '', max: 0, current: null, age: null };
+  }
+
+  const peak = Math.max(...visible.map(s => s.rate));
+  const points = visible.map(s => ({
     x: Math.max(0, Math.min(width, (s.time - now + 30000) * width / 30000)),
     y: Math.max(4, height - 5 - s.rate / peak * (height - 13))
   }));
@@ -33,9 +36,19 @@ export function throughputSparkline(samples, now, width = 300, height = 64) {
     'M ' + Math.max(0, points[0].x - 3).toFixed(1) + ' ' +
     points[0].y.toFixed(1) + ' L ' + coords[0] :
     'M ' + coords.join(' L ');
-  const area = line + ' L ' + points[points.length - 1].x.toFixed(1) +
+  const last = points[points.length - 1];
+  const area = line + ' L ' + last.x.toFixed(1) +
     ' ' + height + ' L ' + points[0].x.toFixed(1) + ' ' + height + ' Z';
-  return { line, area, max: peak };
+
+  // A dashed extension means "last measured", not a new measurement.
+  const age = Math.max(0, now - visible[visible.length - 1].time);
+  const continuation = age >= 1000 && last.x < width ?
+    'M ' + last.x.toFixed(1) + ' ' + last.y.toFixed(1) +
+    ' L ' + width + ' ' + last.y.toFixed(1) : '';
+  return {
+    line, area, continuation, max: peak,
+    current: visible[visible.length - 1].rate, age
+  };
 }
 
 export function bufferedAhead(video) {
@@ -83,7 +96,8 @@ export function createStreamInfoOsd(video, stage) {
   const fields = {};
   let sparkLine;
   let sparkArea;
-  let sparkPeak;
+  let sparkCurrent;
+  let sparkContinuation;
   for (const [title, items] of rows) {
     const section = document.createElement('div');
     section.className = 'stream-info-group';
@@ -106,9 +120,9 @@ export function createStreamInfoOsd(video, stage) {
       chartHeading.className = 'stream-info-chart-heading';
       const chartName = document.createElement('span');
       chartName.textContent = 'NETWORK ACTIVITY';
-      sparkPeak = document.createElement('span');
-      sparkPeak.textContent = 'Waiting for fragments';
-      chartHeading.append(chartName, sparkPeak);
+      sparkCurrent = document.createElement('span');
+      sparkCurrent.textContent = '—';
+      chartHeading.append(chartName, sparkCurrent);
       const ns = 'http://www.w3.org/2000/svg';
       const svg = document.createElementNS(ns, 'svg');
       svg.setAttribute('viewBox', '0 0 300 64');
@@ -119,14 +133,14 @@ export function createStreamInfoOsd(video, stage) {
       sparkArea.setAttribute('class', 'stream-info-spark-area');
       sparkLine = document.createElementNS(ns, 'path');
       sparkLine.setAttribute('class', 'stream-info-spark-line');
-      svg.append(sparkArea, sparkLine);
+      sparkContinuation = document.createElementNS(ns, 'path');
+      sparkContinuation.setAttribute('class', 'stream-info-spark-continuation');
+      svg.append(sparkArea, sparkLine, sparkContinuation);
       const axis = document.createElement('div');
       axis.className = 'stream-info-chart-axis';
       const past = document.createElement('span');
-      past.textContent = '30s AGO';
-      const present = document.createElement('span');
-      present.textContent = 'NOW';
-      axis.append(past, present);
+      past.textContent = '30 seconds';
+      axis.append(past);
       chart.append(chartHeading, svg, axis);
       section.append(chart);
     }
@@ -134,7 +148,7 @@ export function createStreamInfoOsd(video, stage) {
   }
   const note = document.createElement('p');
   note.className = 'stream-info-note';
-  note.textContent = 'Declared bitrate and stream FPS come from the playlist. Throughput and download totals come from completed fragments; playlists are excluded.';
+  note.textContent = 'Declared bitrate and stream FPS come from the playlist.';
   panel.append(note);
   stage.append(toggle, panel);
 
@@ -190,7 +204,9 @@ export function createStreamInfoOsd(video, stage) {
     const graph = throughputSparkline(visibleSamples, now);
     sparkLine.setAttribute('d', graph.line);
     sparkArea.setAttribute('d', graph.area);
-    sparkPeak.textContent = graph.max ? 'PEAK ' + formatRate(graph.max) : 'Waiting for fragments';
+    sparkContinuation.setAttribute('d', graph.continuation);
+    sparkCurrent.textContent = graph.current === null ? '—' :
+      (graph.age > 5000 ? 'LAST ' : '') + formatRate(graph.current);
     put('buffer', number(bufferedAhead(video)) + ' s');
     put('latency', Number.isFinite(hls?.latency) ? number(hls.latency) + ' s' : '—');
     put('state', video.error ? 'Error' : video.ended ? 'Ended' : video.paused ? 'Paused' : video.readyState < 3 ? 'Buffering' : 'Playing');
