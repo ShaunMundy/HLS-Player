@@ -35,14 +35,34 @@ test('download rate supports event stats and payload size fallback', () => {
   assert.equal(fragmentTransferSample({ frag: { stats: { loaded: 1 } } }, 0), null);
 });
 
-test('chart excludes stale samples and does not invent data', () => {
-  assert.deepEqual(throughputSparkline([], 30000), { line: '', area: '', max: 0 });
+test('chart shows the latest value and dashed extension without inventing samples', () => {
   const chart = throughputSparkline([
     { time: 1000, rate: 1000000 },
     { time: 32000, rate: 2000000 },
     { time: 33000, rate: 3000000 }
   ], 34000);
   assert.equal(chart.max, 3000000);
+  assert.equal(chart.current, 3000000);
+  assert.equal(chart.age, 1000);
   assert.ok(chart.line.startsWith('M '));
   assert.ok(chart.area.endsWith(' Z'));
+  assert.match(chart.continuation, / L 300 /);
+  assert.ok(!chart.line.includes('300.0 64.0'));
+});
+
+test('chart expires after 30 seconds without fragments', () => {
+  const empty = { line: '', area: '', continuation: '', max: 0, current: null, age: null };
+  assert.deepEqual(throughputSparkline([], 30000), empty);
+  assert.deepEqual(throughputSparkline([{ time: 1000, rate: 2000000 }], 31001), empty);
+  const old = throughputSparkline([{ time: 1000, rate: 2000000 }], 31000);
+  assert.equal(old.current, 2000000);
+  assert.ok(old.continuation);
+  assert.equal(old.age, 30000);
+});
+
+test('the chart does not extend beyond a sample captured just now', () => {
+  const chart = throughputSparkline([{ time: 45000, rate: 5200000 }], 45000);
+  assert.equal(chart.current, 5200000);
+  assert.equal(chart.continuation, '');
+  assert.ok(chart.line);
 });
